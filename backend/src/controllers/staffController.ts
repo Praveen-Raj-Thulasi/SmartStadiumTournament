@@ -36,7 +36,7 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
 };
 
 export const updateStaffStatus = async (req: Request, res: Response): Promise<void> => {
-  const staffId = req.params.id;
+  const staffId = String(req.params.id);
   const { status } = req.body;
 
   if (!status || !['active', 'inactive', 'on_break'].includes(status)) {

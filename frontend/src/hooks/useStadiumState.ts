@@ -183,7 +183,7 @@ export const useStadiumState = () => {
       localStorage.setItem('arena_user', JSON.stringify(data.user));
       triggerSuccess(`Successfully authenticated as ${data.user.username}`);
       return true;
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to auth server.');
       return false;
     }
@@ -205,7 +205,7 @@ export const useStadiumState = () => {
 
       triggerSuccess('Account created successfully. You can now login.');
       return true;
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to auth server.');
       return false;
     }
@@ -252,7 +252,7 @@ export const useStadiumState = () => {
       triggerSuccess(data.message || 'Match scores updated successfully.');
       fetchConsolidatedData();
       return true;
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
       return false;
     }
@@ -290,7 +290,7 @@ export const useStadiumState = () => {
       triggerSuccess(data.message || 'Incident logged successfully.');
       fetchConsolidatedData();
       return true;
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
       return false;
     }
@@ -321,7 +321,7 @@ export const useStadiumState = () => {
 
       triggerSuccess(data.message || 'Responder dispatched.');
       fetchConsolidatedData();
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
     }
   }, [token, fetchConsolidatedData]);
@@ -350,7 +350,7 @@ export const useStadiumState = () => {
 
       triggerSuccess(data.message || 'Incident marked resolved.');
       fetchConsolidatedData();
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
     }
   }, [token, fetchConsolidatedData]);
@@ -380,7 +380,7 @@ export const useStadiumState = () => {
 
       triggerSuccess(data.message || 'Staff roster shift status updated.');
       fetchConsolidatedData();
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
     }
   }, [token, fetchConsolidatedData]);
@@ -411,7 +411,7 @@ export const useStadiumState = () => {
       triggerSuccess(data.message || 'Staff registered.');
       fetchConsolidatedData();
       return true;
-    } catch (err) {
+    } catch {
       triggerError('Network error connecting to backend server.');
       return false;
     }

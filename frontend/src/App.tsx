@@ -273,6 +273,8 @@ function App() {
         {successMsg && (
           <div 
             className="glass-panel"
+            role="status"
+            aria-live="polite"
             style={{
               position: 'fixed',
               top: '20px',
@@ -297,6 +299,8 @@ function App() {
         {errorMsg && (
           <div 
             className="glass-panel"
+            role="alert"
+            aria-live="assertive"
             style={{
               position: 'fixed',
               top: '20px',
@@ -329,6 +333,8 @@ function App() {
       {successMsg && (
         <div 
           className="glass-panel"
+          role="status"
+          aria-live="polite"
           style={{
             position: 'fixed',
             top: '20px',
@@ -353,6 +359,8 @@ function App() {
       {errorMsg && (
         <div 
           className="glass-panel"
+          role="alert"
+          aria-live="assertive"
           style={{
             position: 'fixed',
             top: '20px',
@@ -450,6 +458,8 @@ function App() {
             className="nav-link" 
             style={{ marginBottom: '12px', padding: '8px 16px', fontSize: '0.8rem' }}
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            aria-expanded={!sidebarCollapsed}
+            aria-label="Toggle Sidebar Navigation"
           >
             <ChevronRight size={16} style={{ transform: sidebarCollapsed ? 'none' : 'rotate(180deg)', transition: 'transform 0.2s' }} />
             {!sidebarCollapsed && <span>Collapse Sidebar</span>}

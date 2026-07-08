@@ -164,7 +164,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Upper Tier 200 Level seating zone. Wait-times and telemetry metrics available."
+              aria-label={`Upper Tier 200 Level seating zone. Status: ${getZoneInfo('sect_200').status}. Metrics: ${getZoneInfo('sect_200').metrics}.`}
               onClick={() => handleZoneClick('sect_200')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -183,7 +183,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Lower Tier 100 Level seating zone. Wait-times and telemetry metrics available."
+              aria-label={`Lower Tier 100 Level seating zone. Status: ${getZoneInfo('sect_100').status}. Metrics: ${getZoneInfo('sect_100').metrics}.`}
               onClick={() => handleZoneClick('sect_100')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -207,7 +207,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Gate A North Entrance queue zone. Wait-times and bottlenecks detail available."
+              aria-label={`Gate A North Entrance queue zone. Status: ${getZoneInfo('gate_a').status}. Metrics: ${getZoneInfo('gate_a').metrics}.`}
               onClick={() => handleZoneClick('gate_a')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -227,7 +227,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Gate B East Entrance queue zone. Wait-times and bottlenecks detail available."
+              aria-label={`Gate B East Entrance queue zone. Status: ${getZoneInfo('gate_b').status}. Metrics: ${getZoneInfo('gate_b').metrics}.`}
               onClick={() => handleZoneClick('gate_b')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -247,7 +247,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Gate C South Entrance queue zone. Wait-times and bottlenecks detail available."
+              aria-label={`Gate C South Entrance queue zone. Status: ${getZoneInfo('gate_c').status}. Metrics: ${getZoneInfo('gate_c').metrics}.`}
               onClick={() => handleZoneClick('gate_c')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -267,7 +267,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Gate D West Entrance queue zone. Wait-times and bottlenecks detail available."
+              aria-label={`Gate D West Entrance queue zone. Status: ${getZoneInfo('gate_d').status}. Metrics: ${getZoneInfo('gate_d').metrics}.`}
               onClick={() => handleZoneClick('gate_d')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -287,7 +287,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="WC Main Restrooms facility zone. Wait-time metrics available."
+              aria-label={`WC Main Restrooms facility zone. Status: ${getZoneInfo('restrooms').status}. Metrics: ${getZoneInfo('restrooms').metrics}.`}
               onClick={() => handleZoneClick('restrooms')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -307,7 +307,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
               style={{ cursor: 'pointer', transition: 'all 0.25s', outline: 'none' }}
               tabIndex={0}
               role="button"
-              aria-label="Concessions Concourse food zone. Wait-time metrics available."
+              aria-label={`Concessions Concourse food zone. Status: ${getZoneInfo('concessions').status}. Metrics: ${getZoneInfo('concessions').metrics}.`}
               onClick={() => handleZoneClick('concessions')}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {

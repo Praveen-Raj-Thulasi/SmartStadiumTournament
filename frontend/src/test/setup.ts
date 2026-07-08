@@ -355,3 +355,14 @@ Object.defineProperty(globalThis, 'fetch', {
   value: fetchMock,
   writable: true
 });
+
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+Object.defineProperty(globalThis, 'ResizeObserver', {
+  value: ResizeObserverMock,
+  writable: true
+});

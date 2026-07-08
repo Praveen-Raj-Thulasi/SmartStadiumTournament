@@ -46,9 +46,11 @@ export const getMetrics = (req: Request, res: Response): void => {
 
 export const getConsolidatedStatus = async (req: Request, res: Response): Promise<void> => {
   try {
-    const matches = await MatchModel.find().sort({ id: 1 });
-    const incidents = await IncidentModel.find().sort({ reportedAt: -1 });
-    const staff = await StaffModel.find();
+    const [matches, incidents, staff] = await Promise.all([
+      MatchModel.find().sort({ id: 1 }),
+      IncidentModel.find().sort({ reportedAt: -1 }),
+      StaffModel.find()
+    ]);
     
     res.json({
       metrics: telemetryState,

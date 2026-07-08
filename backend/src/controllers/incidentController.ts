@@ -44,8 +44,8 @@ export const createIncident = async (req: Request, res: Response): Promise<void>
 };
 
 export const dispatchIncident = async (req: Request, res: Response): Promise<void> => {
-  const incidentId = req.params.id;
-  const { staffId } = req.body;
+  const incidentId = String(req.params.id);
+  const staffId = req.body.staffId ? String(req.body.staffId) : '';
 
   if (!staffId) {
     res.status(400).json({ error: 'Responder Staff ID is required for dispatch.' });
@@ -89,7 +89,7 @@ export const dispatchIncident = async (req: Request, res: Response): Promise<voi
 };
 
 export const resolveIncident = async (req: Request, res: Response): Promise<void> => {
-  const incidentId = req.params.id;
+  const incidentId = String(req.params.id);
 
   try {
     const incident = await IncidentModel.findOne({ id: incidentId });
