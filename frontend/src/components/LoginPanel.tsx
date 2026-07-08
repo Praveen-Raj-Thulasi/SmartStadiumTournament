@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStadiumState } from '../hooks/useStadiumState';
-import { ShieldCheck, UserCheck, HelpCircle, Lock, User, UserPlus } from 'lucide-react';
+import { ShieldCheck, UserCheck, HelpCircle, Lock, User } from 'lucide-react';
 
 interface LoginPanelProps {
   state: ReturnType<typeof useStadiumState>;
