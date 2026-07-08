@@ -20,6 +20,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy for express-rate-limit on hosting platforms like Render
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 
