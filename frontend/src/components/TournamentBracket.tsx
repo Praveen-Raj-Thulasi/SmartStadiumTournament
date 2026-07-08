@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
-import type { Match } from '../hooks/useStadiumState';
+import type { Match, UserRole } from '../hooks/useStadiumState';
 import { Trophy, Calendar, Pencil, ShieldAlert, Award } from 'lucide-react';
 
 interface TournamentBracketProps {
-  state: ReturnType<typeof useStadiumState>;
+  matches: Match[];
+  updateMatchScore: (matchId: number, score1: number, score2: number, status: Match['status']) => Promise<boolean>;
+  role: UserRole;
+  triggerError: (msg: string) => void;
 }
 
-export const TournamentBracket: React.FC<TournamentBracketProps> = ({ state }) => {
-  const { matches, updateMatchScore, role, triggerError } = state;
+export const TournamentBracket: React.FC<TournamentBracketProps> = React.memo(({
+  matches,
+  updateMatchScore,
+  role,
+  triggerError
+}) => {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [score1Input, setScore1Input] = useState<string>('');
   const [score2Input, setScore2Input] = useState<string>('');
@@ -327,4 +333,4 @@ export const TournamentBracket: React.FC<TournamentBracketProps> = ({ state }) =
       )}
     </div>
   );
-};
+});

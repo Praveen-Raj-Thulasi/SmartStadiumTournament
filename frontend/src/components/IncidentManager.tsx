@@ -1,14 +1,26 @@
 import React, { useState } from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
-import type { IncidentCategory, IncidentPriority } from '../hooks/useStadiumState';
+import type { Incident, Staff, IncidentCategory, IncidentPriority, UserRole } from '../hooks/useStadiumState';
 import { AlertCircle, Plus, Search, ShieldAlert, Send, CheckCircle2, Clock, MapPin, UserCheck, Filter } from 'lucide-react';
 
 interface IncidentManagerProps {
-  state: ReturnType<typeof useStadiumState>;
+  incidents: Incident[];
+  staff: Staff[];
+  reportIncident: (title: string, description: string, category: IncidentCategory, priority: IncidentPriority, zone: string) => Promise<boolean>;
+  dispatchStaff: (incidentId: string, staffId: string) => Promise<void> | void;
+  resolveIncident: (incidentId: string) => Promise<void> | void;
+  role: UserRole;
+  triggerError: (msg: string) => void;
 }
 
-export const IncidentManager: React.FC<IncidentManagerProps> = ({ state }) => {
-  const { incidents, staff, reportIncident, dispatchStaff, resolveIncident, role, triggerError } = state;
+export const IncidentManager: React.FC<IncidentManagerProps> = React.memo(({
+  incidents,
+  staff,
+  reportIncident,
+  dispatchStaff,
+  resolveIncident,
+  role,
+  triggerError
+}) => {
   
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -468,4 +480,4 @@ export const IncidentManager: React.FC<IncidentManagerProps> = ({ state }) => {
       )}
     </div>
   );
-};
+});

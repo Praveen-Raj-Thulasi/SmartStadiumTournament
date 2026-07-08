@@ -10,7 +10,13 @@ describe('LoginPanel Component Tests', () => {
   } as any;
 
   it('should render the login panel with autofill options', () => {
-    render(<LoginPanel state={mockState} />);
+    render(
+      <LoginPanel 
+        loginUser={mockState.loginUser} 
+        registerUser={mockState.registerUser} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
     expect(screen.getByText('ArenaFlow Authentication')).toBeInTheDocument();
     expect(screen.getByLabelText(/Username/i)).toBeInTheDocument();
@@ -20,21 +26,33 @@ describe('LoginPanel Component Tests', () => {
   });
 
   it('should switch tabs between Sign In and Register', () => {
-    render(<LoginPanel state={mockState} />);
+    render(
+      <LoginPanel 
+        loginUser={mockState.loginUser} 
+        registerUser={mockState.registerUser} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
-    const registerTabButton = screen.getByRole('button', { name: 'Register' });
+    const registerTabButton = screen.getByRole('tab', { name: 'Register' });
     fireEvent.click(registerTabButton);
     
     expect(screen.getByLabelText(/Assigned Operations Role/i)).toBeInTheDocument();
     expect(screen.getByText('Create Credentials')).toBeInTheDocument();
     
-    const signInTabButton = screen.getByRole('button', { name: 'Sign In' });
+    const signInTabButton = screen.getByRole('tab', { name: 'Sign In' });
     fireEvent.click(signInTabButton);
     expect(screen.queryByLabelText(/Assigned Operations Role/i)).not.toBeInTheDocument();
   });
 
   it('should trigger loginUser on preset credentials click', async () => {
-    render(<LoginPanel state={mockState} />);
+    render(
+      <LoginPanel 
+        loginUser={mockState.loginUser} 
+        registerUser={mockState.registerUser} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
     const directorAutofillButton = screen.getByText(/Autofill Tournament Director/i);
     await act(async () => {
@@ -45,7 +63,13 @@ describe('LoginPanel Component Tests', () => {
   });
 
   it('should validate empty inputs and show error', async () => {
-    render(<LoginPanel state={mockState} />);
+    render(
+      <LoginPanel 
+        loginUser={mockState.loginUser} 
+        registerUser={mockState.registerUser} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
     const form = screen.getByPlaceholderText('Enter username').closest('form')!;
     await act(async () => {

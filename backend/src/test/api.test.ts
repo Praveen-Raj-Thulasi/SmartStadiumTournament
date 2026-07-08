@@ -51,7 +51,10 @@ vi.mock('../models/Match', () => {
   
   class MockMatchModel {
     static find = vi.fn().mockReturnValue({
-      sort: vi.fn().mockResolvedValue(mockMatches)
+      sort: vi.fn().mockReturnValue({
+        lean: vi.fn().mockResolvedValue(mockMatches)
+      }),
+      lean: vi.fn().mockResolvedValue(mockMatches)
     });
     
     static findOne = vi.fn().mockImplementation((query) => {
@@ -63,6 +66,12 @@ vi.mock('../models/Match', () => {
         score1: null,
         score2: null,
         status: 'scheduled',
+        save: vi.fn().mockResolvedValue(true)
+      });
+      if (query.prevMatch1Id === 1 || query.prevMatch2Id === 1) return Promise.resolve({
+        id: 5,
+        team1: null,
+        team2: null,
         save: vi.fn().mockResolvedValue(true)
       });
       return Promise.resolve(null);
@@ -85,7 +94,10 @@ vi.mock('../models/Incident', () => {
   
   class MockIncidentModel {
     static find = vi.fn().mockReturnValue({
-      sort: vi.fn().mockResolvedValue(mockIncidents)
+      sort: vi.fn().mockReturnValue({
+        lean: vi.fn().mockResolvedValue(mockIncidents)
+      }),
+      lean: vi.fn().mockResolvedValue(mockIncidents)
     });
     
     static findOne = vi.fn().mockImplementation((query) => {
@@ -114,7 +126,9 @@ vi.mock('../models/Staff', () => {
   ];
   
   class MockStaffModel {
-    static find = vi.fn().mockResolvedValue(mockStaff);
+    static find = vi.fn().mockReturnValue({
+      lean: vi.fn().mockResolvedValue(mockStaff)
+    });
     
     static findOne = vi.fn().mockImplementation((query) => {
       if (query.id === 's1') return Promise.resolve({

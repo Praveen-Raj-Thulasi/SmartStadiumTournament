@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
 import { ShieldCheck, UserCheck, HelpCircle, Lock, User } from 'lucide-react';
+import type { UserRole } from '../hooks/useStadiumState';
 
 interface LoginPanelProps {
-  state: ReturnType<typeof useStadiumState>;
+  loginUser: (username: string, password: string) => Promise<boolean>;
+  registerUser: (username: string, password: string, role: UserRole) => Promise<boolean>;
+  triggerError: (msg: string) => void;
 }
 
-export const LoginPanel: React.FC<LoginPanelProps> = ({ state }) => {
-  const { loginUser, registerUser, triggerError } = state;
+export const LoginPanel: React.FC<LoginPanelProps> = React.memo(({ loginUser, registerUser, triggerError }) => {
   
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
@@ -82,26 +83,33 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({ state }) => {
           }}>
             <ShieldCheck size={32} color="var(--accent-cyan)" />
           </div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', letterSpacing: '1px' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', letterSpacing: '1px' }}>
             ArenaFlow Authentication
-          </h2>
+          </h1>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Log in to access physical venue operations and scheduling commands.
           </p>
         </div>
 
         {/* Tab Switcher */}
-        <div style={{
-          display: 'flex',
-          background: 'var(--bg-secondary)',
-          borderRadius: '8px',
-          padding: '4px',
-          marginBottom: '24px',
-          border: '1px solid var(--border-color)'
-        }}>
+        <div 
+          role="tablist"
+          aria-label="Authentication Options"
+          style={{
+            display: 'flex',
+            background: 'var(--bg-secondary)',
+            borderRadius: '8px',
+            padding: '4px',
+            marginBottom: '24px',
+            border: '1px solid var(--border-color)'
+          }}
+        >
           <button
             type="button"
             className="btn"
+            role="tab"
+            aria-selected={isLogin}
+            id="tab-signin"
             style={{
               flex: 1,
               background: isLogin ? 'var(--bg-tertiary)' : 'transparent',
@@ -118,6 +126,9 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({ state }) => {
           <button
             type="button"
             className="btn"
+            role="tab"
+            aria-selected={!isLogin}
+            id="tab-register"
             style={{
               flex: 1,
               background: !isLogin ? 'var(--bg-tertiary)' : 'transparent',
@@ -262,4 +273,4 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({ state }) => {
       </div>
     </div>
   );
-};
+});

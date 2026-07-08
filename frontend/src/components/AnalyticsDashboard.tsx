@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
+import type { Incident, StadiumMetrics } from '../hooks/useStadiumState';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   AreaChart, Area, PieChart, Pie, Cell
@@ -7,11 +7,11 @@ import {
 import { TrendingUp, Clock, ShieldAlert, Sparkles, Activity } from 'lucide-react';
 
 interface AnalyticsDashboardProps {
-  state: ReturnType<typeof useStadiumState>;
+  metrics: StadiumMetrics;
+  incidents: Incident[];
 }
 
-export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ state }) => {
-  const { metrics, incidents } = state;
+export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = React.memo(({ metrics, incidents }) => {
 
   // 1. Data mapping for Concessions Wait Times
   const concessionsData = Object.entries(metrics.concessionQueueTimes).map(([key, val]) => ({
@@ -237,4 +237,4 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ state })
 
     </div>
   );
-};
+});

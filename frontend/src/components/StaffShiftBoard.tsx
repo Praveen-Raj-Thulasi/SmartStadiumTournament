@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
-import type { Staff } from '../hooks/useStadiumState';
+import type { Staff, UserRole } from '../hooks/useStadiumState';
 import { Users, UserPlus, Shield, HeartPulse, Trash2, KeyRound } from 'lucide-react';
 
 interface StaffShiftBoardProps {
-  state: ReturnType<typeof useStadiumState>;
+  staff: Staff[];
+  updateStaffStatus: (staffId: string, status: Staff['status']) => Promise<void> | void;
+  addStaffMember: (name: string, roleVal: Staff['role']) => Promise<boolean>;
+  role: UserRole;
+  triggerError: (msg: string) => void;
 }
 
-export const StaffShiftBoard: React.FC<StaffShiftBoardProps> = ({ state }) => {
-  const { staff, updateStaffStatus, addStaffMember, role, triggerError } = state;
+export const StaffShiftBoard: React.FC<StaffShiftBoardProps> = React.memo(({
+  staff,
+  updateStaffStatus,
+  addStaffMember,
+  role,
+  triggerError
+}) => {
   
   // New Staff member form state
   const [showAddForm, setShowAddForm] = useState(false);
@@ -196,4 +204,4 @@ export const StaffShiftBoard: React.FC<StaffShiftBoardProps> = ({ state }) => {
       )}
     </div>
   );
-};
+});

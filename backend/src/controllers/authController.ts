@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'arenaflow_super_secret_jwt_key_2026_xyz';
 
-export const register = async (req: Request, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { username, password, role } = req.body;
 
   const cleanUsername = username?.trim();
@@ -39,12 +39,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({ message: 'User registered successfully.' });
   } catch (err) {
-    console.error('Registration error:', err);
-    res.status(500).json({ error: 'Server error registering user.' });
+    next(err);
   }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { username, password } = req.body;
 
   const cleanUsername = username?.trim();
@@ -83,7 +82,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       }
     });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error during login authentication.' });
+    next(err);
   }
 };

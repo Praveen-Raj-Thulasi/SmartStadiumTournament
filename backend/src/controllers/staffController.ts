@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { StaffModel } from '../models/Staff';
 
-export const getStaff = async (req: Request, res: Response): Promise<void> => {
+export const getStaff = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const roster = await StaffModel.find();
+    const roster = await StaffModel.find().lean();
     res.json(roster);
   } catch (err) {
-    res.status(500).json({ error: 'Server error retrieving roster.' });
+    next(err);
   }
 };
 
-export const createStaff = async (req: Request, res: Response): Promise<void> => {
+export const createStaff = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { name, role } = req.body;
   const cleanName = name?.trim();
 
@@ -31,11 +31,11 @@ export const createStaff = async (req: Request, res: Response): Promise<void> =>
     await newStaff.save();
     res.status(201).json({ message: 'Responder registered successfully.', staff: newStaff });
   } catch (err) {
-    res.status(500).json({ error: 'Server error registering responder.' });
+    next(err);
   }
 };
 
-export const updateStaffStatus = async (req: Request, res: Response): Promise<void> => {
+export const updateStaffStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const staffId = String(req.params.id);
   const { status } = req.body;
 
@@ -56,6 +56,6 @@ export const updateStaffStatus = async (req: Request, res: Response): Promise<vo
 
     res.json({ message: 'Shift status updated.', staff: responder });
   } catch (err) {
-    res.status(500).json({ error: 'Server error updating shift status.' });
+    next(err);
   }
 };

@@ -21,7 +21,14 @@ describe('TournamentBracket Component Tests', () => {
   } as any;
 
   it('should render the bracket headers and match cards', () => {
-    render(<TournamentBracket state={mockState} />);
+    render(
+      <TournamentBracket 
+        matches={mockState.matches} 
+        updateMatchScore={mockState.updateMatchScore} 
+        role={mockState.role} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
     expect(screen.getByText('Tournament Bracket Controller')).toBeInTheDocument();
     expect(screen.getByText('QUARTERFINALS')).toBeInTheDocument();
@@ -33,7 +40,14 @@ describe('TournamentBracket Component Tests', () => {
   });
 
   it('should open edit score modal when director clicks a ready match', () => {
-    render(<TournamentBracket state={mockState} />);
+    render(
+      <TournamentBracket 
+        matches={mockState.matches} 
+        updateMatchScore={mockState.updateMatchScore} 
+        role={mockState.role} 
+        triggerError={mockState.triggerError} 
+      />
+    );
     
     const matchCard = screen.getByLabelText(/Match 1, Cyber Knights vs Apex Wolves/i);
     fireEvent.click(matchCard);
@@ -43,7 +57,14 @@ describe('TournamentBracket Component Tests', () => {
 
   it('should block score changes if the user is not a director', () => {
     const readOnlyState = { ...mockState, role: 'security' };
-    render(<TournamentBracket state={readOnlyState} />);
+    render(
+      <TournamentBracket 
+        matches={readOnlyState.matches} 
+        updateMatchScore={readOnlyState.updateMatchScore} 
+        role={readOnlyState.role} 
+        triggerError={readOnlyState.triggerError} 
+      />
+    );
     
     const matchCard = screen.getByLabelText(/Match 1, Cyber Knights vs Apex Wolves/i);
     fireEvent.click(matchCard);

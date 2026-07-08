@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MatchModel } from '../models/Match';
 import { StaffModel } from '../models/Staff';
 import { IncidentModel } from '../models/Incident';
@@ -15,7 +15,7 @@ export const telemetryState = {
 };
 
 // Start telemetry fluctuation loop
-setInterval(() => {
+const intervalId = setInterval(() => {
   const deltaCap = Math.floor((Math.random() - 0.4) * 30);
   telemetryState.liveCapacity = Math.min(telemetryState.maxCapacity, Math.max(0, telemetryState.liveCapacity + deltaCap));
 
@@ -40,16 +40,21 @@ setInterval(() => {
   }
 }, 8000);
 
+// Unref timer in testing environment to allow clean process exit
+if (typeof intervalId.unref === 'function') {
+  intervalId.unref();
+}
+
 export const getMetrics = (req: Request, res: Response): void => {
   res.json(telemetryState);
 };
 
-export const getConsolidatedStatus = async (req: Request, res: Response): Promise<void> => {
+export const getConsolidatedStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const [matches, incidents, staff] = await Promise.all([
-      MatchModel.find().sort({ id: 1 }),
-      IncidentModel.find().sort({ reportedAt: -1 }),
-      StaffModel.find()
+      MatchModel.find().sort({ id: 1 }).lean(),
+      IncidentModel.find().sort({ reportedAt: -1 }).lean(),
+      StaffModel.find().lean()
     ]);
     
     res.json({
@@ -59,7 +64,6 @@ export const getConsolidatedStatus = async (req: Request, res: Response): Promis
       staff
     });
   } catch (err) {
-    console.error('Error fetching consolidated status:', err);
-    res.status(500).json({ error: 'Server error retrieving consolidated dashboard status.' });
+    next(err);
   }
 };

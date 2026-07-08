@@ -14,8 +14,19 @@ import metricRoutes from './routes/metricRoutes';
 
 // Import Middleware
 import { errorHandler } from './middleware/error';
+import { sanitizeNoSql, sanitizeXSS } from './middleware/sanitize';
 
 dotenv.config();
+
+// Ensure JWT_SECRET is present in production configurations
+if (!process.env.JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('FATAL ERROR: JWT_SECRET environment variable is not defined!');
+    process.exit(1);
+  } else {
+    console.warn('WARNING: JWT_SECRET environment variable is missing. Using development/testing fallback.');
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -43,6 +54,10 @@ app.use(cors(corsOptions));
 
 // JSON Parser
 app.use(express.json());
+
+// Input Sanitization (NoSQL injection and XSS defenses)
+app.use(sanitizeNoSql);
+app.use(sanitizeXSS);
 
 // API Rate Limiting to prevent brute force and DDoS
 const apiLimiter = rateLimit({

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { useStadiumState } from '../hooks/useStadiumState';
+import type { Incident, Staff, StadiumMetrics, IncidentCategory, IncidentPriority } from '../hooks/useStadiumState';
 import { MapPin, Users, AlertTriangle, ShieldAlert } from 'lucide-react';
 
 interface StadiumMapProps {
-  state: ReturnType<typeof useStadiumState>;
+  metrics: StadiumMetrics;
+  incidents: Incident[];
+  staff: Staff[];
+  reportIncident: (title: string, description: string, category: IncidentCategory, priority: IncidentPriority, zone: string) => Promise<boolean>;
+  dispatchStaff: (incidentId: string, staffId: string) => Promise<void> | void;
 }
 
 interface ZoneDetails {
@@ -13,9 +17,13 @@ interface ZoneDetails {
   metrics: string;
   status: 'low' | 'medium' | 'high' | 'alert';
 }
-
-export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
-  const { metrics, incidents, staff, reportIncident, dispatchStaff } = state;
+export const StadiumMap: React.FC<StadiumMapProps> = React.memo(({
+  metrics,
+  incidents,
+  staff,
+  reportIncident,
+  dispatchStaff
+}) => {
   const [selectedZone, setSelectedZone] = useState<string | null>(null);
   
   // Incident Form state (quick report)
@@ -157,6 +165,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
             
             {/* Seating Upper Tier 200 Level */}
             <path 
+              id="map-zone-sect_200"
               d="M 50,200 A 200,140 0 1,1 450,200 A 200,140 0 1,1 50,200 M 90,200 A 160,110 0 1,0 410,200 A 160,110 0 1,0 90,200" 
               fill={getZoneFillColor('sect_200')} 
               stroke={getZoneStrokeColor('sect_200')} 
@@ -172,10 +181,13 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('sect_200');
                 }
               }}
-            />
+            >
+              <title>Upper Tier 200 Level Seating</title>
+            </path>
 
             {/* Seating Lower Tier 100 Level */}
             <path 
+              id="map-zone-sect_100"
               d="M 90,200 A 160,110 0 1,1 410,200 A 160,110 0 1,1 90,200 M 130,200 A 120,80 0 1,0 370,200 A 120,80 0 1,0 130,200" 
               fill={getZoneFillColor('sect_100')} 
               stroke={getZoneStrokeColor('sect_100')} 
@@ -191,15 +203,18 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('sect_100');
                 }
               }}
-            />
+            >
+              <title>Lower Tier 100 Level Seating</title>
+            </path>
 
             {/* Central Pitch Field */}
-            <ellipse cx="250" cy="200" rx="100" ry="60" fill="#1b4d3e" stroke="rgba(255,255,255,0.2)" strokeWidth="3" />
+            <ellipse id="map-zone-pitch" cx="250" cy="200" rx="100" ry="60" fill="#1b4d3e" stroke="rgba(255,255,255,0.2)" strokeWidth="3" />
             <line x1="250" y1="140" x2="250" y2="260" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
             <circle cx="250" cy="200" r="25" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
 
             {/* Gate A (North) */}
             <path
+              id="map-zone-gate_a"
               d="M 220,20 L 280,20 L 270,50 L 230,50 Z"
               fill={getZoneFillColor('gate_a')}
               stroke={getZoneStrokeColor('gate_a')}
@@ -215,11 +230,14 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('gate_a');
                 }
               }}
-            />
+            >
+              <title>Gate A (North Entrance)</title>
+            </path>
             <text x="250" y="40" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" style={{ pointerEvents: 'none' }}>GATE A</text>
 
             {/* Gate B (East) */}
             <path
+              id="map-zone-gate_b"
               d="M 450,170 L 480,180 L 480,220 L 450,230 Z"
               fill={getZoneFillColor('gate_b')}
               stroke={getZoneStrokeColor('gate_b')}
@@ -235,11 +253,14 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('gate_b');
                 }
               }}
-            />
+            >
+              <title>Gate B (East Entrance)</title>
+            </path>
             <text x="465" y="204" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(90 465 204)" style={{ pointerEvents: 'none' }}>GATE B</text>
 
             {/* Gate C (South) */}
             <path
+              id="map-zone-gate_c"
               d="M 220,380 L 280,380 L 270,350 L 230,350 Z"
               fill={getZoneFillColor('gate_c')}
               stroke={getZoneStrokeColor('gate_c')}
@@ -255,11 +276,14 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('gate_c');
                 }
               }}
-            />
+            >
+              <title>Gate C (South Entrance)</title>
+            </path>
             <text x="250" y="370" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" style={{ pointerEvents: 'none' }}>GATE C</text>
 
             {/* Gate D (West) */}
             <path
+              id="map-zone-gate_d"
               d="M 50,170 L 20,180 L 20,220 L 50,230 Z"
               fill={getZoneFillColor('gate_d')}
               stroke={getZoneStrokeColor('gate_d')}
@@ -275,11 +299,14 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('gate_d');
                 }
               }}
-            />
+            >
+              <title>Gate D (West Entrance)</title>
+            </path>
             <text x="35" y="204" fill="white" fontSize="10" fontWeight="bold" textAnchor="middle" transform="rotate(-90 35 204)" style={{ pointerEvents: 'none' }}>GATE D</text>
 
             {/* Restrooms Zone (Inner Lower Left) */}
             <rect 
+              id="map-zone-restrooms"
               x="135" y="275" width="40" height="25" rx="5"
               fill={getZoneFillColor('restrooms')}
               stroke={getZoneStrokeColor('restrooms')}
@@ -295,11 +322,14 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('restrooms');
                 }
               }}
-            />
+            >
+              <title>Main Restrooms Area</title>
+            </rect>
             <text x="155" y="291" fill="white" fontSize="9" fontWeight="bold" textAnchor="middle" style={{ pointerEvents: 'none' }}>WC</text>
 
             {/* Concessions Zone (Inner Lower Right) */}
             <rect 
+              id="map-zone-concessions"
               x="325" y="275" width="40" height="25" rx="5"
               fill={getZoneFillColor('concessions')}
               stroke={getZoneStrokeColor('concessions')}
@@ -315,7 +345,9 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   handleZoneClick('concessions');
                 }
               }}
-            />
+            >
+              <title>Concessions Food Court</title>
+            </rect>
             <text x="345" y="291" fill="white" fontSize="9" fontWeight="bold" textAnchor="middle" style={{ pointerEvents: 'none' }}>FOOD</text>
           </svg>
 
@@ -450,9 +482,10 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                         <div style={{ marginTop: '8px' }}>
                           {dispatchTargetIncidentId === inc.id ? (
                             <div>
-                              <label className="form-label" style={{ fontSize: '0.75rem' }}>Select Responder:</label>
+                              <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor={`quick-responder-${inc.id}`}>Select Responder:</label>
                               <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
                                 <select 
+                                  id={`quick-responder-${inc.id}`}
                                   className="form-select" 
                                   style={{ padding: '4px 8px', fontSize: '0.8rem' }}
                                   onChange={(e) => {
@@ -503,8 +536,9 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   </h4>
                   
                   <div className="form-group" style={{ marginBottom: '12px' }}>
-                    <label className="form-label">Issue Title</label>
+                    <label className="form-label" htmlFor="quick-title">Issue Title</label>
                     <input 
+                      id="quick-title"
                       type="text" 
                       className="form-input" 
                       value={quickTitle} 
@@ -515,8 +549,9 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                   </div>
 
                   <div className="form-group" style={{ marginBottom: '12px' }}>
-                    <label className="form-label">Description</label>
+                    <label className="form-label" htmlFor="quick-desc">Description</label>
                     <textarea 
+                      id="quick-desc"
                       className="form-input" 
                       rows={2}
                       value={quickDesc} 
@@ -528,8 +563,9 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Category</label>
+                      <label className="form-label" htmlFor="quick-category">Category</label>
                       <select 
+                        id="quick-category"
                         className="form-select" 
                         value={quickCategory}
                         onChange={e => setQuickCategory(e.target.value as any)}
@@ -542,8 +578,9 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                     </div>
 
                     <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label className="form-label">Priority</label>
+                      <label className="form-label" htmlFor="quick-priority">Priority</label>
                       <select 
+                        id="quick-priority"
                         className="form-select" 
                         value={quickPriority}
                         onChange={e => setQuickPriority(e.target.value as any)}
@@ -567,6 +604,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
                 </form>
               ) : (
                 <button 
+                  id="btn-quick-report"
                   className="btn btn-secondary" 
                   style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}
                   onClick={() => setShowQuickReport(true)}
@@ -589,4 +627,4 @@ export const StadiumMap: React.FC<StadiumMapProps> = ({ state }) => {
 
     </div>
   );
-};
+});

@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { MatchModel } from '../models/Match';
 
-export const getMatches = async (req: Request, res: Response): Promise<void> => {
+export const getMatches = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const matches = await MatchModel.find().sort({ id: 1 });
+    const matches = await MatchModel.find().sort({ id: 1 }).lean();
     res.json(matches);
   } catch (err) {
-    res.status(500).json({ error: 'Server error retrieving bracket matches.' });
+    next(err);
   }
 };
 
-export const updateMatch = async (req: Request, res: Response): Promise<void> => {
+export const updateMatch = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const matchId = parseInt(req.params.id, 10);
   const { score1, score2, status } = req.body;
 
@@ -84,7 +84,6 @@ export const updateMatch = async (req: Request, res: Response): Promise<void> =>
 
     res.json({ message: `Match #${matchId} updated successfully.`, match });
   } catch (err) {
-    console.error('Match update error:', err);
-    res.status(500).json({ error: 'Server error updating match scores.' });
+    next(err);
   }
 };

@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { IncidentModel } from '../models/Incident';
 import { StaffModel } from '../models/Staff';
 
-export const getIncidents = async (req: Request, res: Response): Promise<void> => {
+export const getIncidents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const incidents = await IncidentModel.find().sort({ reportedAt: -1 });
+    const incidents = await IncidentModel.find().sort({ reportedAt: -1 }).lean();
     res.json(incidents);
   } catch (err) {
-    res.status(500).json({ error: 'Server error retrieving safety logs.' });
+    next(err);
   }
 };
 
-export const createIncident = async (req: Request, res: Response): Promise<void> => {
+export const createIncident = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { title, description, category, priority, zone } = req.body;
 
   // Inputs validation
@@ -39,11 +39,11 @@ export const createIncident = async (req: Request, res: Response): Promise<void>
     await newIncident.save();
     res.status(201).json({ message: 'Incident ticket registered.', incident: newIncident });
   } catch (err) {
-    res.status(500).json({ error: 'Server error logging new incident ticket.' });
+    next(err);
   }
 };
 
-export const dispatchIncident = async (req: Request, res: Response): Promise<void> => {
+export const dispatchIncident = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const incidentId = String(req.params.id);
   const staffId = req.body.staffId ? String(req.body.staffId) : '';
 
@@ -84,11 +84,11 @@ export const dispatchIncident = async (req: Request, res: Response): Promise<voi
 
     res.json({ message: 'Responder dispatched successfully.', incident, staff: responder });
   } catch (err) {
-    res.status(500).json({ error: 'Server error dispatching responder.' });
+    next(err);
   }
 };
 
-export const resolveIncident = async (req: Request, res: Response): Promise<void> => {
+export const resolveIncident = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const incidentId = String(req.params.id);
 
   try {
@@ -118,6 +118,6 @@ export const resolveIncident = async (req: Request, res: Response): Promise<void
 
     res.json({ message: 'Incident resolved.', incident });
   } catch (err) {
-    res.status(500).json({ error: 'Server error resolving incident.' });
+    next(err);
   }
 };
