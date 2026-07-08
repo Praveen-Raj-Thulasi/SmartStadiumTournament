@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { MatchModel } from '../models/Match';
 import { StaffModel } from '../models/Staff';
 import { IncidentModel } from '../models/Incident';
+import { getCached, setCached } from '../utils/cache';
 
 // In-Memory Telemetry State
 export const telemetryState = {
@@ -51,18 +52,28 @@ export const getMetrics = (req: Request, res: Response): void => {
 
 export const getConsolidatedStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const cached = getCached('consolidated');
+    if (cached) {
+      cached.metrics = telemetryState;
+      res.json(cached);
+      return;
+    }
+
     const [matches, incidents, staff] = await Promise.all([
       MatchModel.find().sort({ id: 1 }).lean(),
       IncidentModel.find().sort({ reportedAt: -1 }).lean(),
       StaffModel.find().lean()
     ]);
     
-    res.json({
+    const statusData = {
       metrics: telemetryState,
       matches,
       incidents,
       staff
-    });
+    };
+
+    setCached('consolidated', statusData);
+    res.json(statusData);
   } catch (err) {
     next(err);
   }

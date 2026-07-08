@@ -1,10 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 import { IncidentModel } from '../models/Incident';
 import { StaffModel } from '../models/Staff';
+import { getCached, setCached, invalidateCache } from '../utils/cache';
 
 export const getIncidents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const cached = getCached('incidents');
+    if (cached) {
+      res.json(cached);
+      return;
+    }
     const incidents = await IncidentModel.find().sort({ reportedAt: -1 }).lean();
+    setCached('incidents', incidents);
     res.json(incidents);
   } catch (err) {
     next(err);
@@ -37,6 +44,7 @@ export const createIncident = async (req: Request, res: Response, next: NextFunc
     });
 
     await newIncident.save();
+    invalidateCache();
     res.status(201).json({ message: 'Incident ticket registered.', incident: newIncident });
   } catch (err) {
     next(err);
@@ -82,6 +90,7 @@ export const dispatchIncident = async (req: Request, res: Response, next: NextFu
     incident.staffAssigned = staffId;
     await incident.save();
 
+    invalidateCache();
     res.json({ message: 'Responder dispatched successfully.', incident, staff: responder });
   } catch (err) {
     next(err);
@@ -116,6 +125,7 @@ export const resolveIncident = async (req: Request, res: Response, next: NextFun
     incident.resolvedAt = new Date().toISOString();
     await incident.save();
 
+    invalidateCache();
     res.json({ message: 'Incident resolved.', incident });
   } catch (err) {
     next(err);

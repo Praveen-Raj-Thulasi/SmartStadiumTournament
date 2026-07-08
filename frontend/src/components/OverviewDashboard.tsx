@@ -21,10 +21,10 @@ export const OverviewDashboard: React.FC<OverviewDashboardProps> = React.memo(({
   resolveIncident,
   setView
 }) => {
-  const liveMatches = matches.filter(m => m.status === 'live');
-  const activeIncidents = incidents.filter(i => i.status !== 'resolved');
-  const activeStaff = staff.filter(s => s.status === 'active');
-  const capacityPercent = Math.round((metrics.liveCapacity / metrics.maxCapacity) * 100);
+  const liveMatches = React.useMemo(() => matches.filter(m => m.status === 'live'), [matches]);
+  const activeIncidents = React.useMemo(() => incidents.filter(i => i.status !== 'resolved'), [incidents]);
+  const activeStaff = React.useMemo(() => staff.filter(s => s.status === 'active'), [staff]);
+  const capacityPercent = React.useMemo(() => Math.round((metrics.liveCapacity / metrics.maxCapacity) * 100), [metrics.liveCapacity, metrics.maxCapacity]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

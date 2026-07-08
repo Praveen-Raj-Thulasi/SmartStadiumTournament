@@ -78,17 +78,19 @@ export const IncidentManager: React.FC<IncidentManagerProps> = React.memo(({
   };
 
   // Filtered Incidents List
-  const filteredIncidents = incidents.filter(inc => {
-    const matchesSearch = inc.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          inc.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = filterCategory === 'all' || inc.category === filterCategory;
-    const matchesStatus = filterStatus === 'all' || inc.status === filterStatus;
+  const filteredIncidents = React.useMemo(() => {
+    return incidents.filter(inc => {
+      const matchesSearch = inc.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            inc.description.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesCategory = filterCategory === 'all' || inc.category === filterCategory;
+      const matchesStatus = filterStatus === 'all' || inc.status === filterStatus;
 
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+  }, [incidents, searchQuery, filterCategory, filterStatus]);
 
-  const availableStaff = staff.filter(s => s.status === 'active');
+  const availableStaff = React.useMemo(() => staff.filter(s => s.status === 'active'), [staff]);
 
   const getPriorityColor = (p: IncidentPriority) => {
     switch (p) {

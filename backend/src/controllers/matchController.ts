@@ -1,9 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import { MatchModel } from '../models/Match';
+import { getCached, setCached, invalidateCache } from '../utils/cache';
 
 export const getMatches = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    const cached = getCached('matches');
+    if (cached) {
+      res.json(cached);
+      return;
+    }
     const matches = await MatchModel.find().sort({ id: 1 }).lean();
+    setCached('matches', matches);
     res.json(matches);
   } catch (err) {
     next(err);
@@ -82,6 +89,7 @@ export const updateMatch = async (req: Request, res: Response, next: NextFunctio
       }
     }
 
+    invalidateCache();
     res.json({ message: `Match #${matchId} updated successfully.`, match });
   } catch (err) {
     next(err);
