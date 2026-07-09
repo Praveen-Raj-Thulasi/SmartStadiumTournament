@@ -183,7 +183,7 @@ export const LoginPanel: React.FC<LoginPanelProps> = React.memo(({ loginUser, re
                 id="auth-role"
                 className="form-select"
                 value={role}
-                onChange={(e) => setRole(e.target.value as any)}
+                onChange={(e) => setRole(e.target.value as UserRole)}
               >
                 <option value="director">Tournament Director</option>
                 <option value="security">Security Chief</option>

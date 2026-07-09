@@ -1,8 +1,8 @@
 let cache: {
-  consolidated: any;
-  matches: any;
-  incidents: any;
-  staff: any;
+  consolidated: unknown;
+  matches: unknown;
+  incidents: unknown;
+  staff: unknown;
 } = {
   consolidated: null,
   matches: null,
@@ -19,7 +19,7 @@ let cacheTimes = {
 
 const CACHE_TTL_MS = 3000; // Cache duration of 3 seconds
 
-export const getCached = (key: keyof typeof cache) => {
+export const getCached = (key: keyof typeof cache): unknown => {
   const now = Date.now();
   if (cache[key] && (now - cacheTimes[key] < CACHE_TTL_MS)) {
     return cache[key];
@@ -27,7 +27,7 @@ export const getCached = (key: keyof typeof cache) => {
   return null;
 };
 
-export const setCached = (key: keyof typeof cache, data: any) => {
+export const setCached = (key: keyof typeof cache, data: unknown): void => {
   cache[key] = data;
   cacheTimes[key] = Date.now();
 };

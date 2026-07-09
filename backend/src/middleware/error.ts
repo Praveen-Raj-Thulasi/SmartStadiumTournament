@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const errorHandler = (
-  err: any,
+  err: Error & { statusCode?: number; status?: number },
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   console.error('Unhandled Server Error:', err);
 

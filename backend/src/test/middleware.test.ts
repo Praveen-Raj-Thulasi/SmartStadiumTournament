@@ -8,22 +8,22 @@ import {
   validateStaffCreate, 
   validateStaffStatusUpdate 
 } from '../middleware/validation';
-import { authenticateJWT, requireRole } from '../middleware/auth';
+import { authenticateJWT, requireRole, AuthenticatedRequest } from '../middleware/auth';
 import { errorHandler } from '../middleware/error';
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 describe('Backend Middleware Unit Tests', () => {
-  let mockRequest: any;
-  let mockResponse: any;
-  let nextFunction: any;
+  let mockRequest: Partial<AuthenticatedRequest>;
+  let mockResponse: Partial<Response>;
+  let nextFunction: NextFunction;
 
   beforeEach(() => {
     mockRequest = {};
     mockResponse = {
       status: vi.fn().mockReturnThis(),
       json: vi.fn().mockReturnThis()
-    };
-    nextFunction = vi.fn();
+    } as unknown as Partial<Response>;
+    nextFunction = vi.fn() as unknown as NextFunction;
   });
 
   describe('1. Sanitization Middleware', () => {
@@ -166,7 +166,7 @@ describe('Backend Middleware Unit Tests', () => {
     it('requireRole - should allow matching role sessions', () => {
       mockRequest.user = { id: '1', username: 'director', role: 'director' };
       
-      requireRole(['director'])(mockRequest as any, mockResponse as Response, nextFunction);
+      requireRole(['director'])(mockRequest as AuthenticatedRequest, mockResponse as Response, nextFunction);
 
       expect(nextFunction).toHaveBeenCalled();
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -175,7 +175,7 @@ describe('Backend Middleware Unit Tests', () => {
     it('requireRole - should return 403 for unauthorized roles', () => {
       mockRequest.user = { id: '2', username: 'guard', role: 'security' };
       
-      requireRole(['director'])(mockRequest as any, mockResponse as Response, nextFunction);
+      requireRole(['director'])(mockRequest as AuthenticatedRequest, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
       expect(nextFunction).not.toHaveBeenCalled();

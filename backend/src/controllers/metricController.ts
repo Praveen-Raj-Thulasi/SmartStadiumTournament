@@ -52,7 +52,7 @@ export const getMetrics = (req: Request, res: Response): void => {
 
 export const getConsolidatedStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const cached = getCached('consolidated');
+    const cached = getCached('consolidated') as Record<string, unknown> | null;
     if (cached) {
       cached.metrics = telemetryState;
       res.json(cached);

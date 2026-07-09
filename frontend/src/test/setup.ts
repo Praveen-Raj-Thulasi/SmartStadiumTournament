@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import type { Match, Staff, Incident } from '../hooks/useStadiumState';
 
 // In-memory data store for tests
 let store: { [key: string]: string } = {};
@@ -35,9 +36,9 @@ const INITIAL_TEAMS = [
   { id: '8', name: 'Delta Rangers', logoColor: '#84cc16' },
 ];
 
-let mockMatches: any[] = [];
-let mockStaff: any[] = [];
-let mockIncidents: any[] = [];
+let mockMatches: Match[] = [];
+let mockStaff: Staff[] = [];
+let mockIncidents: Incident[] = [];
 
 const resetMockDb = () => {
   mockMatches = [
@@ -84,10 +85,10 @@ Object.defineProperty(globalThis, 'resetMockDb', {
 });
 
 // Mock API Fetch Interceptor
-const fetchMock = async (url: string, options?: any) => {
+const fetchMock = async (url: string, options?: RequestInit) => {
   const method = options?.method || 'GET';
-  const body = options?.body ? JSON.parse(options.body) : null;
-  const headers = options?.headers || {};
+  const body = typeof options?.body === 'string' ? JSON.parse(options.body) : null;
+  const headers = (options?.headers as Record<string, string>) || {};
   let userRole = headers['x-user-role'];
   const authHeader = headers['Authorization'] || headers['authorization'];
   if (authHeader && authHeader.startsWith('Bearer ')) {

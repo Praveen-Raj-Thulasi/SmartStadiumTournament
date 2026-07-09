@@ -6,7 +6,7 @@ import { validateStaffCreate, validateStaffStatusUpdate } from '../middleware/va
 const router = Router();
 
 router.get('/', getStaff);
-router.post('/', authenticateJWT, validateStaffCreate, createStaff);
+router.post('/', authenticateJWT, requireRole(['director', 'security']), validateStaffCreate, createStaff);
 router.put('/:id/status', authenticateJWT, requireRole(['director', 'security']), validateStaffStatusUpdate, updateStaffStatus);
 
 export default router;

@@ -568,7 +568,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = React.memo(({
                         id="quick-category"
                         className="form-select" 
                         value={quickCategory}
-                        onChange={e => setQuickCategory(e.target.value as any)}
+                        onChange={e => setQuickCategory(e.target.value as IncidentCategory)}
                       >
                         <option value="security">Security</option>
                         <option value="crowd">Crowd</option>
@@ -583,7 +583,7 @@ export const StadiumMap: React.FC<StadiumMapProps> = React.memo(({
                         id="quick-priority"
                         className="form-select" 
                         value={quickPriority}
-                        onChange={e => setQuickPriority(e.target.value as any)}
+                        onChange={e => setQuickPriority(e.target.value as IncidentPriority)}
                       >
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>

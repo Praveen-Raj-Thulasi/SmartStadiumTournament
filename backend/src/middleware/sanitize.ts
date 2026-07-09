@@ -4,23 +4,23 @@ import { Request, Response, NextFunction } from 'express';
  * Deeply cleans object inputs by deleting any keys that begin with '$'.
  * This prevents NoSQL injection attacks against Mongoose queries.
  */
-const cleanNoSql = (obj: any): any => {
+const cleanNoSql = (obj: unknown): void => {
   if (obj === null || typeof obj !== 'object') {
-    return obj;
+    return;
   }
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+  const record = obj as Record<string, unknown>;
+  for (const key in record) {
+    if (Object.prototype.hasOwnProperty.call(record, key)) {
       if (key.startsWith('$')) {
-        delete obj[key];
+        delete record[key];
       } else {
-        cleanNoSql(obj[key]);
-        if (obj[key] !== null && typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0) {
-          delete obj[key];
+        cleanNoSql(record[key]);
+        if (record[key] !== null && typeof record[key] === 'object' && Object.keys(record[key] as object).length === 0) {
+          delete record[key];
         }
       }
     }
   }
-  return obj;
 };
 
 /**
@@ -36,20 +36,20 @@ const cleanXss = (val: string): string => {
     .replace(/<\/?[^>]+(>|$)/g, ''); // Strip all remaining HTML tags
 };
 
-const cleanXssObj = (obj: any): any => {
+const cleanXssObj = (obj: unknown): void => {
   if (obj === null || typeof obj !== 'object') {
-    return obj;
+    return;
   }
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      if (typeof obj[key] === 'string') {
-        obj[key] = cleanXss(obj[key]);
+  const record = obj as Record<string, unknown>;
+  for (const key in record) {
+    if (Object.prototype.hasOwnProperty.call(record, key)) {
+      if (typeof record[key] === 'string') {
+        record[key] = cleanXss(record[key] as string);
       } else {
-        cleanXssObj(obj[key]);
+        cleanXssObj(record[key]);
       }
     }
   }
-  return obj;
 };
 
 /**

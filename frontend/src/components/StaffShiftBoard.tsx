@@ -25,6 +25,10 @@ export const StaffShiftBoard: React.FC<StaffShiftBoardProps> = React.memo(({
 
   const handleSubmitStaff = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (role === 'guest_services') {
+      triggerError('Access Denied: Guest Services personnel cannot register new staff.');
+      return;
+    }
     const success = await addStaffMember(staffName, staffRole);
     if (success) {
       setStaffName('');
@@ -72,14 +76,16 @@ export const StaffShiftBoard: React.FC<StaffShiftBoardProps> = React.memo(({
             Manage staff check-ins, check active task loads, and update response teams.
           </p>
         </div>
-        <button 
-          className="btn btn-primary"
-          style={{ gap: '6px' }}
-          onClick={() => setShowAddForm(true)}
-        >
-          <UserPlus size={16} />
-          Register Staff
-        </button>
+        {role !== 'guest_services' && (
+          <button 
+            className="btn btn-primary"
+            style={{ gap: '6px' }}
+            onClick={() => setShowAddForm(true)}
+          >
+            <UserPlus size={16} />
+            Register Staff
+          </button>
+        )}
       </div>
 
       {/* Staff Grid cards */}

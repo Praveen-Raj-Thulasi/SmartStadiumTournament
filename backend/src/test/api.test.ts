@@ -34,7 +34,7 @@ vi.mock('../models/User', () => {
       return Promise.resolve(null);
     });
     
-    constructor(data: any) {
+    constructor(data: Record<string, unknown>) {
       Object.assign(this, data);
     }
     
@@ -77,7 +77,7 @@ vi.mock('../models/Match', () => {
       return Promise.resolve(null);
     });
     
-    constructor(data: any) {
+    constructor(data: Record<string, unknown>) {
       Object.assign(this, data);
     }
     
@@ -110,7 +110,7 @@ vi.mock('../models/Incident', () => {
       return Promise.resolve(null);
     });
     
-    constructor(data: any) {
+    constructor(data: Record<string, unknown>) {
       Object.assign(this, data);
     }
     
@@ -142,7 +142,7 @@ vi.mock('../models/Staff', () => {
       return Promise.resolve(null);
     });
     
-    constructor(data: any) {
+    constructor(data: Record<string, unknown>) {
       Object.assign(this, data);
     }
     
@@ -246,6 +246,63 @@ describe('Smart Stadium Backend API Tests', () => {
 
       expect(res.status).toBe(201);
       expect(res.body).toHaveProperty('incident');
+    });
+  });
+
+  describe('4. Staff Routes', () => {
+    it('POST /api/staff - should restrict staff registration to authorized roles (director)', async () => {
+      const res = await request(app)
+        .post('/api/staff')
+        .set('Authorization', `Bearer ${directorToken}`)
+        .send({
+          name: 'Captain Miller',
+          role: 'security'
+        });
+
+      expect(res.status).toBe(201);
+      expect(res.body).toHaveProperty('staff');
+    });
+
+    it('POST /api/staff - should block staff registration for guest services role', async () => {
+      const guestToken = jwt.sign(
+        { id: 'mock-user-id', username: 'guest', role: 'guest_services' },
+        JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      const res = await request(app)
+        .post('/api/staff')
+        .set('Authorization', `Bearer ${guestToken}`)
+        .send({
+          name: 'Janitor Smith',
+          role: 'janitorial'
+        });
+
+      expect(res.status).toBe(403);
+    });
+
+    it('POST /api/staff - should authenticate with x-user-role header and succeed for director', async () => {
+      const res = await request(app)
+        .post('/api/staff')
+        .set('x-user-role', 'director')
+        .send({
+          name: 'Staff Doc',
+          role: 'medical'
+        });
+
+      expect(res.status).toBe(201);
+    });
+
+    it('POST /api/staff - should authenticate with x-user-role header and fail for guest_services', async () => {
+      const res = await request(app)
+        .post('/api/staff')
+        .set('x-user-role', 'guest_services')
+        .send({
+          name: 'Staff Doc',
+          role: 'medical'
+        });
+
+      expect(res.status).toBe(403);
     });
   });
 });

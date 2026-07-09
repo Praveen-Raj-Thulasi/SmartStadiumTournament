@@ -76,4 +76,37 @@ describe('StaffShiftBoard Component Tests', () => {
 
     expect(mockState.addStaffMember).toHaveBeenCalledWith('Elena Rostova', 'medical');
   });
+
+  it('should hide Register Staff button if user role is guest_services', () => {
+    render(
+      <StaffShiftBoard 
+        staff={mockState.staff}
+        updateStaffStatus={mockState.updateStaffStatus}
+        addStaffMember={mockState.addStaffMember}
+        role="guest_services"
+        triggerError={mockState.triggerError}
+      />
+    );
+
+    const openBtn = screen.queryByRole('button', { name: /Register Staff/i });
+    expect(openBtn).toBeNull();
+  });
+
+  it('should trigger error and reject staff change if user is guest_services', () => {
+    const triggerErrMock = vi.fn();
+    render(
+      <StaffShiftBoard 
+        staff={mockState.staff}
+        updateStaffStatus={mockState.updateStaffStatus}
+        addStaffMember={mockState.addStaffMember}
+        role="guest_services"
+        triggerError={triggerErrMock}
+      />
+    );
+
+    const select = screen.getByLabelText(/Change shift status for Marcus Vance/i);
+    fireEvent.change(select, { target: { value: 'on_break' } });
+
+    expect(triggerErrMock).toHaveBeenCalledWith(expect.stringContaining('Access Denied'));
+  });
 });
